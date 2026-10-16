@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ملزمان ریکارڈ سرچ</title>
+<style>
+@font-face { font-family: "NastaliqApp"; src: url("fonts/nastaliq-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "NastaliqApp"; src: url("fonts/nastaliq-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "NastaliqApp"; src: url("fonts/latin-400.woff2") format("woff2"); font-weight: 400; unicode-range: U+0000-00FF; font-display: swap; }
+
+:root {
+  --bg: #f1f4f9; --card: #ffffff; --ink: #14213d; --muted: #5f6b7a; --line: #d9e0ea;
+  --brand: #0b3d6e; --brand-2: #14548f; --accent: #b8860b; --ok: #1b7f4b; --warn: #b45309; --err: #b3261e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: "NastaliqApp", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", "Segoe UI", Tahoma, Arial, sans-serif;
+  font-size: 17px; line-height: 2.1;
+}
+[hidden] { display: none !important; }
+.ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: Arial, "Segoe UI", sans-serif; line-height: 1.5; }
+
+/* لاگ ان */
+#login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: var(--card); width: 100%; max-width: 420px; border-radius: 14px; padding: 28px 26px; box-shadow: 0 10px 30px rgba(20,33,61,.12); border-top: 6px solid var(--brand); }
+.login-card h1 { margin: 0 0 4px; font-size: 24px; color: var(--brand); }
+.login-card p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+.login-card input { width: 100%; }
+.err { color: var(--err); font-size: 15px; min-height: 28px; margin-top: 8px; }
+
+/* ایپ */
+header.top { background: var(--brand); color: #fff; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+header.top h1 { margin: 0; font-size: 24px; font-weight: 700; }
+header.top small { opacity: .85; font-size: 14px; }
+main { max-width: 1500px; margin: 0 auto; padding: 18px; }
+.panel { background: var(--card); border-radius: 12px; padding: 18px 18px 14px; box-shadow: 0 2px 10px rgba(20,33,61,.08); }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 2px; font-weight: 700; }
+input[type=text], input[type=password], input[type=search] {
+  width: 100%; font: inherit; font-size: 17px; padding: 6px 12px; border: 1.5px solid var(--line); border-radius: 9px; background: #fbfcfe; color: var(--ink); line-height: 1.9;
+}
+input:focus { outline: none; border-color: var(--brand-2); box-shadow: 0 0 0 3px rgba(20,84,143,.15); background: #fff; }
+input.latin { direction: ltr; text-align: right; font-family: Arial, "Segoe UI", sans-serif; line-height: 1.7; padding: 9px 12px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+button { font: inherit; font-size: 16px; padding: 4px 20px; border: 0; border-radius: 9px; cursor: pointer; color: #fff; background: var(--brand); line-height: 2; }
+button:hover { background: var(--brand-2); }
+button.secondary { background: #e7ecf4; color: var(--ink); }
+button.secondary:hover { background: #d9e1ee; }
+button.save { background: var(--ok); margin-inline-start: auto; }
+button.save:hover { background: #156a3e; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.info { margin: 14px 2px 8px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; color: var(--muted); font-size: 15px; }
+.info b { color: var(--ink); }
+.tablewrap { background: var(--card); border-radius: 12px; box-shadow: 0 2px 10px rgba(20,33,61,.08); overflow: auto; max-height: 68vh; }
+table { border-collapse: collapse; width: 100%; min-width: 1150px; }
+th { position: sticky; top: 0; background: #e8eef7; color: var(--brand); font-size: 15px; padding: 2px 10px; text-align: right; border-bottom: 2px solid var(--brand); white-space: nowrap; z-index: 1; }
+td { padding: 1px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; font-size: 17px; }
+tr:nth-child(even) td { background: #f8fafd; }
+tr:hover td { background: #eef5ff; }
+td.num, td.src { color: var(--muted); font-size: 14px; }
+td.name { font-weight: 700; }
+.faint { color: #9aa5b4; }
+.tag { display: inline-block; background: #fff3dd; color: var(--warn); border: 1px solid #f1d6a4; border-radius: 6px; padding: 0 8px; font-size: 13px; margin-inline-start: 6px; line-height: 1.8; }
+.empty { padding: 40px 10px; text-align: center; color: var(--muted); }
+.more { text-align: center; padding: 12px; }
+.note { color: var(--muted); font-size: 13px; text-align: center; padding: 14px 8px 24px; line-height: 1.9; }
+#progress { color: var(--ok); font-size: 15px; }
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="login-card">
+    <h1>ملزمان ریکارڈ سرچ</h1>
+    <p>ڈیٹا کھولنے کے لیے پاس ورڈ لکھیں۔</p>
+    <input id="pw" type="password" placeholder="پاس ورڈ" autocomplete="off" class="latin" style="text-align:left">
+    <div style="margin-top:12px"><button id="loginBtn" type="button">کھولیں</button></div>
+    <div id="loginErr" class="err" role="alert"></div>
+  </div>
+</section>
+
+<section id="app" hidden>
+  <header class="top">
+    <h1>تھانہ اربن ایریا، ملزمان ریکارڈ سرچ</h1>
+    <small id="dbInfo"></small>
+  </header>
+  <main>
+    <div class="panel">
+      <div class="grid">
+        <div><label for="qCnic">شناختی کارڈ نمبر</label><input id="qCnic" type="search" class="latin" inputmode="numeric" placeholder="38403-1234567-1" autocomplete="off"></div>
+        <div><label for="qName">نام ملزم</label><input id="qName" type="search" placeholder="مثال: صہیب" autocomplete="off"></div>
+        <div><label for="qFather">ولدیت</label><input id="qFather" type="search" placeholder="مثال: محمد یونس" autocomplete="off"></div>
+        <div><label for="qFir">ایف آئی آر نمبر</label><input id="qFir" type="search" class="latin" placeholder="300/25" autocomplete="off"></div>
+      </div>
+      <div class="actions">
+        <button id="goBtn" type="button">تلاش کریں</button>
+        <button id="clearBtn" type="button" class="secondary">صاف کریں</button>
+        <span id="progress"></span>
+        <button id="saveBtn" type="button" class="save" disabled>نتیجہ تصویر میں محفوظ کریں</button>
+      </div>
+    </div>
+
+    <div class="info" id="info"></div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>نمبر</th><th>نام ملزم</th><th>ولدیت / زوجہ</th><th>شناختی کارڈ</th><th>ایف آئی آر نمبر</th>
+            <th>تاریخ مقدمہ</th><th>زیر دفعہ</th><th>پوزیشن مقدمہ</th><th>پوزیشن ملزم</th><th>ماخذ</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty">اوپر کسی بھی خانے میں لکھیں، نتیجہ فوراً نیچے آ جائے گا۔</div>
+      <div id="more" class="more" hidden><button id="moreBtn" type="button" class="secondary">مزید دکھائیں</button></div>
+    </div>
+    <div class="note">
+      شناختی کارڈ نمبر ڈیٹا میں صرف انہی ریکارڈز میں درج ہے جن کی PDF میں یہ کالم موجود تھا۔ پتہ PDF میں موجود نہیں ہے۔<br>
+      ماخذ کا مطلب ہے: PDF فائل نمبر اور اس کا صفحہ نمبر۔
+    </div>
+  </main>
+</section>
+
+<script src="data.enc.js"></script>
+<script src="search.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
