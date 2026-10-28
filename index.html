@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b3d6e">
+<title>ملزمان ریکارڈ سرچ</title>
+<style>
+@font-face { font-family: "NastaliqApp"; src: url("fonts/nastaliq-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "NastaliqApp"; src: url("fonts/nastaliq-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "NastaliqApp"; src: url("fonts/latin-400.woff2") format("woff2"); font-weight: 400; unicode-range: U+0000-00FF; font-display: swap; }
+
+:root {
+  --bg: #f1f4f9; --card: #ffffff; --ink: #14213d; --muted: #5f6b7a; --line: #d9e0ea;
+  --brand: #0b3d6e; --brand-2: #14548f; --accent: #b8860b; --ok: #1b7f4b; --warn: #b45309; --err: #b3261e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: "NastaliqApp", "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", "Segoe UI", Tahoma, Arial, sans-serif;
+  font-size: 17px; line-height: 2.1; overflow-wrap: anywhere;
+}
+[hidden] { display: none !important; }
+.ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-family: Arial, "Segoe UI", sans-serif; line-height: 1.5; overflow-wrap: anywhere; }
+
+/* لاگ ان */
+#login { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: var(--card); width: 100%; max-width: 420px; border-radius: 14px; padding: 28px 26px; box-shadow: 0 10px 30px rgba(20,33,61,.12); border-top: 6px solid var(--brand); }
+.login-card h1 { margin: 0 0 4px; font-size: 24px; color: var(--brand); }
+.login-card p { margin: 0 0 16px; color: var(--muted); font-size: 15px; }
+.pwrow { display: flex; gap: 8px; }
+.pwrow input { flex: 1; min-width: 0; }
+.err { color: var(--err); font-size: 15px; min-height: 28px; margin-top: 8px; }
+
+/* ایپ */
+header.top { background: var(--brand); color: #fff; padding: 12px 22px; display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; flex-wrap: wrap; }
+header.top h1 { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.9; }
+header.top small { opacity: .85; font-size: 14px; }
+main { max-width: 1500px; margin: 0 auto; padding: 18px; }
+.panel { background: var(--card); border-radius: 12px; padding: 18px 18px 14px; box-shadow: 0 2px 10px rgba(20,33,61,.08); }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+label { display: block; font-size: 15px; color: var(--muted); margin-bottom: 2px; font-weight: 700; }
+input[type=text], input[type=password], input[type=search], select, input[type=date], input[type=file] {
+  width: 100%; font: inherit; font-size: 17px; padding: 6px 12px; border: 1.5px solid var(--line); border-radius: 9px; background: #fbfcfe; color: var(--ink); line-height: 1.9;
+}
+input:focus, select:focus, button:focus-visible { outline: none; border-color: var(--brand-2); box-shadow: 0 0 0 3px rgba(20,84,143,.25); }
+input:focus { background: #fff; }
+input.latin { direction: ltr; text-align: right; font-family: Arial, "Segoe UI", sans-serif; line-height: 1.7; padding: 9px 12px; }
+input.left { text-align: left; }
+.hint { color: var(--warn); font-size: 14px; line-height: 1.8; margin-top: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+button { font: inherit; font-size: 16px; padding: 4px 20px; border: 0; border-radius: 9px; cursor: pointer; color: #fff; background: var(--brand); line-height: 2; }
+button:hover { background: var(--brand-2); }
+button.secondary { background: #e7ecf4; color: var(--ink); }
+button.secondary:hover { background: #d9e1ee; }
+button.save { background: var(--ok); margin-inline-start: auto; }
+button.save:hover { background: #156a3e; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.info { margin: 14px 2px 8px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; color: var(--muted); font-size: 15px; }
+.info b { color: var(--ink); }
+.tablewrap { background: var(--card); border-radius: 12px; box-shadow: 0 2px 10px rgba(20,33,61,.08); overflow: auto; max-height: 68vh; }
+table { border-collapse: collapse; width: 100%; min-width: 1150px; }
+th { position: sticky; top: 0; background: #e8eef7; color: var(--brand); font-size: 15px; padding: 2px 10px; text-align: right; border-bottom: 2px solid var(--brand); white-space: nowrap; z-index: 1; }
+td { padding: 1px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; font-size: 17px; }
+tr:nth-child(even) td { background: #f8fafd; }
+tr:hover td { background: #eef5ff; }
+td.num, td.src { color: var(--muted); font-size: 14px; }
+td.name { font-weight: 700; }
+.faint { color: #9aa5b4; }
+.tag { display: inline-block; background: #fff3dd; color: var(--warn); border: 1px solid #f1d6a4; border-radius: 6px; padding: 0 8px; font-size: 13px; margin-inline-start: 6px; line-height: 1.8; }
+.empty { padding: 40px 10px; text-align: center; color: var(--muted); }
+.more { text-align: center; padding: 12px; }
+.note { color: var(--muted); font-size: 13px; text-align: center; padding: 14px 8px 24px; line-height: 1.9; }
+#progress { color: var(--ok); font-size: 15px; }
+
+.hdr-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.hdr-actions button { background: rgba(255,255,255,.16); padding: 0 14px; font-size: 15px; line-height: 2; }
+.hdr-actions button:hover { background: rgba(255,255,255,.3); }
+.hdr-actions .who { font-size: 15px; opacity: .95; }
+
+/* ایڈمن پینل */
+.tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.tabs button { background: #e7ecf4; color: var(--ink); }
+.tabs button.active { background: var(--brand); color: #fff; }
+.cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+@media (max-width: 800px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+.card { background: #f3f7fc; border: 1px solid var(--line); border-radius: 10px; padding: 6px 14px; }
+.card small { color: var(--muted); font-size: 14px; display: block; line-height: 1.8; }
+.card b { font-size: 24px; color: var(--brand); font-family: Arial, sans-serif; line-height: 1.5; }
+.formrow { display: grid; grid-template-columns: 1.3fr .7fr 1.5fr auto; gap: 12px; align-items: end; }
+@media (max-width: 1000px) { .formrow { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .formrow { grid-template-columns: 1fr; } }
+.row-inline { display: flex; gap: 8px; }
+.row-inline input { flex: 1; min-width: 0; }
+.mini { font-size: 13px; padding: 0 10px; line-height: 2; margin: 2px 0 2px 4px; }
+.mini.danger { background: var(--err); }
+.mini.danger:hover { background: #8f1d17; }
+.acts { white-space: nowrap; }
+.badge { display: inline-block; background: #eef1f6; color: var(--muted); border-radius: 6px; padding: 0 9px; font-size: 13px; line-height: 1.9; }
+.badge.on { background: #e1f4e9; color: var(--ok); }
+.badge.off { background: #fde8e6; color: var(--err); }
+.badge.adm { background: #fff3dd; color: var(--warn); }
+.msg { font-size: 15px; min-height: 26px; margin-top: 6px; }
+.okmsg { color: var(--ok); } .badmsg { color: var(--err); }
+.credbox { margin-top: 12px; background: #fffbea; border: 1px dashed var(--accent); border-radius: 10px; padding: 10px 14px; }
+.credbox pre { margin: 0 0 6px; font-family: Arial, sans-serif; direction: ltr; text-align: left; font-size: 17px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; user-select: all; }
+.filters { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+@media (max-width: 1000px) { .filters { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .filters { grid-template-columns: 1fr; } }
+input[type=date] { direction: ltr; }
+.pager { display: flex; gap: 10px; align-items: center; justify-content: center; padding: 10px; color: var(--muted); font-size: 15px; flex-wrap: wrap; }
+.overlay { position: fixed; inset: 0; background: rgba(20,33,61,.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+.modal { background: #fff; border-radius: 14px; padding: 20px 22px; width: 100%; max-width: 460px; max-height: 90vh; overflow: auto; box-shadow: 0 14px 40px rgba(0,0,0,.3); }
+.modal.wide { max-width: 760px; }
+.modal h2 { margin: 0 0 8px; font-size: 20px; color: var(--brand); }
+.sec-title { margin: 6px 0 8px; color: var(--brand); font-size: 19px; }
+.helptext { color: var(--muted); font-size: 15px; margin: 0 0 12px; line-height: 2; }
+.snolist { font-size: 13px; color: var(--muted); }
+
+/* موبائل: جدول کی جگہ کارڈ */
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  main { padding: 10px; }
+  .panel { padding: 14px 12px 10px; }
+  header.top { padding: 10px 12px; }
+  header.top h1 { font-size: 19px; }
+  .login-card { padding: 22px 18px; }
+  button { min-height: 44px; }
+  .mini { min-height: 38px; padding: 0 12px; margin: 3px 0 3px 6px; }
+  input[type=text], input[type=password], input[type=search], select, input[type=date] { min-height: 46px; }
+  .actions button { flex: 1 1 auto; }
+  button.save { margin-inline-start: 0; flex-basis: 100%; }
+  .tablewrap { max-height: none !important; overflow: visible; background: transparent; box-shadow: none; }
+  table.rt { min-width: 0 !important; display: block; }
+  table.rt thead { display: none; }
+  table.rt tbody { display: block; }
+  table.rt tr { display: block; background: #fff; border: 1px solid var(--line); border-radius: 12px; margin: 0 0 10px; padding: 6px 0; box-shadow: 0 1px 4px rgba(20,33,61,.06); }
+  table.rt tr:nth-child(even) td, table.rt tr:hover td { background: transparent; }
+  table.rt td { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; border: 0; padding: 1px 14px; text-align: left; }
+  table.rt td::before { content: attr(data-label); color: var(--muted); font-size: 13px; flex: none; text-align: right; }
+  table.rt td:empty { display: none; }
+  table.rt td.empty { display: block; text-align: center; }
+  table.rt td.empty::before { content: none; }
+  table.rt td.name { font-size: 19px; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-bottom: 3px; }
+  table.rt td.acts { white-space: normal; flex-wrap: wrap; justify-content: flex-start; padding-top: 6px; }
+  table.rt td.acts::before { content: none; }
+  .modal { padding: 16px 14px; }
+}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="login-card">
+    <h1>ملزمان ریکارڈ سرچ</h1>
+    <p>اپنا پاس ورڈ لکھیں۔</p>
+    <div class="pwrow">
+      <input id="pw" type="password" class="latin left" dir="ltr" lang="en" placeholder="پاس ورڈ" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+      <button id="pwToggle" type="button" class="secondary" aria-controls="pw">دکھائیں</button>
+    </div>
+    <div style="margin-top:12px"><button id="loginBtn" type="button">لاگ ان</button></div>
+    <div id="loginErr" class="err" role="alert"></div>
+  </div>
+</section>
+
+<section id="app" hidden>
+  <header class="top">
+    <h1>تھانہ اربن ایریا، ملزمان ریکارڈ سرچ</h1>
+    <div class="hdr-actions">
+      <small id="dbInfo"></small>
+      <span class="who" id="whoami"></span>
+      <button id="navSearch" type="button" hidden>تلاش</button>
+      <button id="navAdmin" type="button" hidden>ایڈمن پینل</button>
+      <button id="logoutBtn" type="button">لاگ آؤٹ</button>
+    </div>
+  </header>
+
+  <main id="searchView">
+    <div class="panel">
+      <div class="grid">
+        <div><label for="qCnic">شناختی کارڈ نمبر</label><input id="qCnic" type="text" class="latin" inputmode="numeric" placeholder="38403-1234567-1" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"></div>
+        <div><label for="qName">نام ملزم</label><input id="qName" type="text" dir="auto" lang="ur" placeholder="مثال: ساجد" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div id="hintName" class="hint" hidden></div></div>
+        <div><label for="qFather">ولدیت</label><input id="qFather" type="text" dir="auto" lang="ur" placeholder="مثال: لاوارث" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div id="hintFather" class="hint" hidden></div></div>
+        <div><label for="qFir">ایف آئی آر نمبر</label><input id="qFir" type="text" class="latin" placeholder="300/25" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"></div>
+      </div>
+      <div class="actions">
+        <button id="goBtn" type="button">تلاش کریں</button>
+        <button id="clearBtn" type="button" class="secondary">صاف کریں</button>
+        <span id="progress"></span>
+        <button id="saveBtn" type="button" class="save" disabled>نتیجہ تصویر میں محفوظ کریں</button>
+      </div>
+    </div>
+
+    <div class="info" id="info"></div>
+    <div class="tablewrap">
+      <table class="rt">
+        <thead>
+          <tr>
+            <th>نمبر</th><th>نام ملزم</th><th>ولدیت / زوجہ</th><th>شناختی کارڈ</th><th>ایف آئی آر نمبر</th>
+            <th>تاریخ مقدمہ</th><th>زیر دفعہ</th><th>پوزیشن مقدمہ</th><th>پوزیشن ملزم</th><th>ماخذ</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty">اوپر کسی بھی خانے میں لکھیں، نتیجہ فوراً نیچے آ جائے گا۔</div>
+      <div id="more" class="more" hidden><button id="moreBtn" type="button" class="secondary">مزید دکھائیں</button></div>
+    </div>
+    <div class="note">
+      شناختی کارڈ نمبر ڈیٹا میں صرف انہی ریکارڈز میں درج ہے جن کی PDF میں یہ کالم موجود تھا۔ پتہ PDF میں موجود نہیں ہے۔<br>
+      ماخذ کا مطلب ہے: PDF فائل نمبر اور اس کا صفحہ نمبر۔
+    </div>
+  </main>
+
+  <main id="adminView" hidden>
+    <div class="panel">
+      <div class="tabs">
+        <button id="tab-users" type="button" class="active">صارفین</button>
+        <button id="tab-logs" type="button">سرچ ریکارڈ</button>
+        <button id="tab-data" type="button">ڈیٹا اپ ڈیٹ</button>
+      </div>
+
+      <div id="pane-users">
+        <div class="cards">
+          <div class="card"><small>کل صارفین</small><b id="sumUsers">0</b></div>
+          <div class="card"><small>کل سرچ</small><b id="sumSearches">0</b></div>
+          <div class="card"><small>کل نتائج دیکھے گئے</small><b id="sumResults">0</b></div>
+          <div class="card"><small>تصویر محفوظ کی گئی</small><b id="sumExports">0</b></div>
+        </div>
+
+        <h3 class="sec-title">نیا صارف بنائیں</h3>
+        <div class="formrow">
+          <div><label for="nuName">صارف کا نام</label><input id="nuName" type="text" dir="auto" autocomplete="off" placeholder="مثال: علی خان"></div>
+          <div><label for="nuRole">کردار</label><select id="nuRole"><option value="user">صارف</option><option value="admin">ایڈمن</option></select></div>
+          <div><label for="nuPass">پاس ورڈ</label><div class="row-inline"><input id="nuPass" type="text" class="latin left" dir="ltr" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="genPass" type="button" class="secondary">نیا</button></div></div>
+          <div><button id="createBtn" type="button">صارف بنائیں</button></div>
+        </div>
+        <div id="createMsg" class="msg"></div>
+        <div id="credBox" class="credbox" hidden>
+          <div>صارف بن گیا۔ یہ معلومات اسے دے دیں۔ پاس ورڈ دوبارہ نہیں دکھایا جائے گا۔</div>
+          <pre id="credText"></pre>
+          <button id="credCopy" type="button" class="mini">کاپی کریں</button>
+          <button id="credWa" type="button" class="mini secondary">واٹس ایپ پر بھیجیں</button>
+        </div>
+
+        <h3 class="sec-title" style="margin-top:20px">تمام صارفین</h3>
+        <div id="usersMsg" class="msg"></div>
+        <div class="tablewrap" style="max-height:none">
+          <table class="rt" style="min-width:980px">
+            <thead><tr><th>نام</th><th>کردار</th><th>حالت</th><th>سرچ</th><th>نتائج دیکھے</th><th>تصویر</th><th>آخری لاگ ان</th><th>آخری سرچ</th><th>عمل</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="pane-logs" hidden>
+        <div class="filters">
+          <div><label for="lfUser">صارف</label><select id="lfUser"><option value="">سب صارفین</option></select></div>
+          <div><label for="lfAction">قسم</label><select id="lfAction"><option value="">سب</option><option value="search">سرچ</option><option value="export">تصویر محفوظ</option><option value="login">لاگ ان</option></select></div>
+          <div><label for="lfFrom">تاریخ سے</label><input id="lfFrom" type="date"></div>
+          <div><label for="lfTo">تاریخ تک</label><input id="lfTo" type="date"></div>
+          <div class="row-inline"><button id="lfGo" type="button">دکھائیں</button><button id="lfClear" type="button" class="secondary">صاف</button></div>
+        </div>
+        <div class="actions" style="margin-top:8px"><button id="lfCsv" type="button" class="secondary mini">CSV فائل میں محفوظ کریں</button></div>
+        <div id="logsMsg" class="msg"></div>
+        <div class="tablewrap" style="max-height:62vh">
+          <table class="rt" style="min-width:980px">
+            <thead><tr><th>وقت</th><th>صارف</th><th>قسم</th><th>شناختی کارڈ</th><th>نام</th><th>ولدیت</th><th>ایف آئی آر</th><th>نتائج</th><th>ریکارڈ</th></tr></thead>
+            <tbody id="logsBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <button id="logPrev" type="button" class="secondary mini">پچھلا</button>
+          <span id="logInfo"></span>
+          <button id="logNext" type="button" class="secondary mini">اگلا</button>
+        </div>
+      </div>
+
+      <div id="pane-data" hidden>
+        <h3 class="sec-title">ڈیٹا اپ ڈیٹ</h3>
+        <p class="helptext">ریکارڈ بدلنے ہوں تو نئی records.json یہاں چنیں۔ براؤزر اسے انکرپٹ کر کے نئی data.enc.js فائل ڈاؤن لوڈ کرے گا۔ اس فائل کو GitHub پر پرانی فائل کی جگہ اپ لوڈ کریں۔ صارفین کے پاس ورڈ نہیں بدلتے۔</p>
+        <div class="formrow" style="grid-template-columns: 2fr auto">
+          <div><label for="dataFile">records.json</label><input id="dataFile" type="file" accept=".json,application/json"></div>
+          <div><button id="dataBuild" type="button">data.enc.js بنائیں</button></div>
+        </div>
+        <div id="dataMsg" class="msg"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="pwDialog" class="overlay" hidden>
+    <div class="modal">
+      <h2 id="pwTitle">پاس ورڈ بدلیں</h2>
+      <label for="pwNew">نیا پاس ورڈ</label>
+      <div class="row-inline"><input id="pwNew" type="text" class="latin left" dir="ltr" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="pwGen" type="button" class="secondary">نیا</button></div>
+      <div id="pwMsg" class="msg"></div>
+      <div class="actions">
+        <button id="pwSave" type="button">محفوظ کریں</button>
+        <button id="pwCopy" type="button" class="secondary" hidden>کاپی کریں</button>
+        <button id="pwClose" type="button" class="secondary" style="margin-inline-start:auto">بند کریں</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="entDialog" class="overlay" hidden>
+    <div class="modal wide">
+      <h2 id="entTitle">نتائج</h2>
+      <div class="tablewrap" style="max-height:60vh">
+        <table class="rt" style="min-width:560px">
+          <thead><tr><th>نمبر</th><th>نام ملزم</th><th>ولدیت</th><th>شناختی کارڈ</th><th>ایف آئی آر</th></tr></thead>
+          <tbody id="entBody"></tbody>
+        </table>
+      </div>
+      <div class="actions"><button id="entClose" type="button" class="secondary" style="margin-inline-start:auto">بند کریں</button></div>
+    </div>
+  </div>
+</section>
+
+<script src="config.js"></script>
+<script src="data.enc.js"></script>
+<script src="search.js"></script>
+<script src="auth.js"></script>
+<script src="admin.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
